@@ -1,0 +1,70 @@
+criar pasta
+dar git init na pasta
+    npm é um gerenciador de pacotes, nos ajuda para não perder
+    configurações estabelecidas portanto quando temos um pacote,
+    ele faz essas configurações automaticamente, 
+
+
+    Definimos classes no Modelo do MVC
+
+    View faz a parte com o frontend, ele oferece a interface que se 
+    comunica com o frontend
+
+    Controller
+        Inteligencia básica da API, ele se comunica com o Model que 
+        mapeia o banco de dados, e entrega para a View
+
+    Servidores Web:
+        Local que armazenados a API ou nosso backend.
+        O backend só atende respostas e não faz requisições, Callbacks
+        e WebHooks, 
+        
+
+
+Express caminho para sua APi, ele ajuda a criar a API, agiliza o processo
+
+
+    API RESTful:
+        Não é tecnologia, framework, e sim um conjunto de princípios, 
+        estabelecendo de forma padronizada como o mercado indica, 
+
+        LocalStorage guarda o cache
+        Cache é muito rápido de estar em memória, porém se sair da página
+        ele perde, 
+        Cookie
+        Estado não é controlado no backend
+        Padronizar todos como produto
+
+    EndPoints:
+        ponto final 
+        Recurso: encapsulamento, temos apenas uma parte que pode ser en-
+        xergada e outra limitada
+        URL: 
+        EndPoint: 
+
+        APIS publicas colocar versão
+
+
+
+AULA 4:
+    API RESTful
+    
+    Certificar-se de utilizar CamelCase em todo projeto, da mesma forma
+    para SneakCase
+
+    Podemos transformar mais pacotes com JSON do que XML
+    
+    Objetos escrevemos com minúsculo como:
+
+        app
+
+    Arrow não precisam ser nomeadas criada com o ECMA6
+
+
+        Comparação de == e ===
+
+            if( 1 == '1') ==> V
+            if( 1 === '1') ==> F
+
+    Por !nome || preco 
+        se nome e preco for indefinido 
