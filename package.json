@@ -1,0 +1,14 @@
+{
+  "name": "meu-primeiro-backend",
+  "version": "1.0.0",
+  "description": "Meu primeiro backend em node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Eduardo12X",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
