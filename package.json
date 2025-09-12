@@ -1,0 +1,14 @@
+{
+  "name": "meuprimeirobackend",
+  "version": "1.0.0",
+  "description": "primeira api com node",
+  "main": "index.js",
+  "scripts": {
+    "test": "y"
+  },
+  "author": "ArthurRansolin",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
