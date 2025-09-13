@@ -93,7 +93,7 @@ app.put('/api/produtos/:id', (req, res) => {
 // Rota DELETE para excluir um produto por ID.
 app.delete('/api/produtos/:id', (req, res) => {
   const id = parseInt(req.params.id);
-  const initialLength = produtos.length; // Guarda o tamanho original do array
+  const initialLength = produtos.length; // Guarda  o tamanho original do array
 
   // Filtra o array, removendo o produto com o ID especificado.
   produtos = produtos.filter(p => p.id !== id);
