@@ -1,8 +1,4 @@
-const express = require('express');
-const app = express();
-const PORT = 3000;
 
-app.use(express .json());
 
 let produtos = [
     {id: 1, nome: 'Teclado Mecânico', preco: 450.00},
@@ -10,14 +6,6 @@ let produtos = [
     {id: 3, nome: 'Monitor 144hz', preco: 1200.00},
 ];
 let nextId = 4;
-
-app.get('/', (req,res) => {
-    res.send('Bem-vindo à nossa primeira API Back-end com Express!');
-});
-
-app.get('/sobre', (req,res) => {
-    res.send('Esta é a página "sobre" da nossa API');
-});
 
 // CRUD PRODUTOS
 
@@ -98,5 +86,3 @@ app.listen(PORT, () => {
 });
 
 // FIM CRUD PRODUTOS
-
-// CRUD USUÁRIOS
