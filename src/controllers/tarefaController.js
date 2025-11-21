@@ -1,13 +1,17 @@
-let tarefas = [
-  { id: 1, titulo: "Biologia", descricao: "", concluida: false },
-  { id: 2, titulo: "Química", descricao: "", concluida: false },
-  { id: 3, titulo: "Matemática", descricao: "", concluida: false },
-];
+const tarefaModel = require('../models/tarefaModel');
 
-let nextId = 4;
+// let tarefas = [
+//   { id: 1, titulo: "Biologia", descricao: "", concluida: false },
+//   { id: 2, titulo: "Química", descricao: "", concluida: false },
+//   { id: 3, titulo: "Matemática", descricao: "", concluida: false },
+// ];
 
-exports.listarTodos = (req, res) => {
+// let nextId = 4;
+
+exports.listarTodos = async (req, res) => {
   try {
+    //Chama o Model para buscar os dados
+    const tarefas = await tarefaModel.findAll();
     res.status(200).json(tarefas);
   } catch (error) {
     console.error(error);
@@ -15,10 +19,10 @@ exports.listarTodos = (req, res) => {
   }
 };
 
-exports.buscarPorId = (req, res) => {
+exports.buscarPorId = async (req, res) => {
   try {
     const { id } = req.params;
-    const tarefa = tarefas.find((t) => t.id === parseInt(id));
+    const tarefa = await tarefaModel.findById(id);
 
     if (!tarefa) {
       return res.status(404).json({ erro: "Tarefa não encontrada." });
@@ -31,15 +35,35 @@ exports.buscarPorId = (req, res) => {
   }
 };
 
-exports.criar = (req, res) => {};
+exports.criar = async (req, res) => {
+  const { titulo, descricao, concluida } = req.body;
 
-exports.atualizar = (req, res) => {
+    // Validações
+    if (!titulo) {
+        return res.status(400).json({ message: 'Título é obrigatório.' });
+    }
+
+    if (titulo.trim().length < 3) {
+        return res.status(400).json({ message: 'Título deve ter no mínimo 3 caracteres.' });
+    }
+
+    try {
+        const novaTarefa = await tarefaModel.create(titulo, descricao, concluida);
+
+        res.status(201).json({ message: "Tarefa criada com sucesso!", novaTarefa });
+    } catch (err) {
+        res.status(500).json({ message: "Erro ao criar tarefa.", erro: err.message });
+    }
+};
+
+exports.atualizar = async (req, res) => {
+
   try {
     const { id } = req.params;
     const { titulo, descricao, concluida } = req.body;
 
     // Busca a tarefa pelo ID
-    const tarefa = await Tarefa.findById(id);
+    const tarefa = await tarefaModel.findById(id);
     if (!tarefa) {
       return res.status(404).json({ erro: "Tarefa não encontrada." });
     }
@@ -64,18 +88,17 @@ exports.atualizar = (req, res) => {
   }
 };
 
-exports.deletar = (req, res) => {
+exports.deletar = async(req, res) => {
   const id = parseInt(req.params.id);
-  const initialLength = tarefas.length; //Uso somente com array
 
-  tarefas = tarefas.filter((p) => p.id !== id);
-
-  //Filtra o array, removendo o produto com o ID especificado.
-  if (tarefas.length < initialLength) {
-    //Se o produto foi removido, retorna status 204 (No Content).
-    res.status(204).send(); // send() corpo para 204
-  } else {
-    //Se o produto não foi encontrado para exclusão, retorna 404.
-    res.status(404).json({ message: "Tarefa não encontrada para exclusão." });
+  try {
+    const result = await tarefaModel.delete(id);
+    if(result.changes > 0){
+      res.status(204).send(); // Sucesso, sem conteúdo
+    } else {
+      res.status(404).json({ message: 'Tarefa não encontrado para exclusão.' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Erro no servidor ao deletar tarefa." })
   }
 };
