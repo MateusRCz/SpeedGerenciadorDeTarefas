@@ -68,3 +68,57 @@ AULA 4:
 
     Por !nome || preco 
         se nome e preco for indefinido 
+
+
+AULA 6:
+
+    Arquitetura monolítica
+        como se fosse um ERP
+
+    A Arquitetura de microsserviços:
+
+        a caracteristica é o onde
+        cada serviço é responsável por uma funcionalidade de negócio
+
+        É muito difícil de um problema acontecer se alterar algo
+
+        Normalmente sistemas Web precisam ser de alta escalabilidade
+
+        O microsserviços é utilizado quando o sistema não poder 
+        travar
+
+        Acoplamento é quando um depende do outro ou ao contrário
+
+        usuario, pedido
+
+
+    Prova
+
+        Pode cair sobre as linguagens de apresentação
+        Declarar variaveis com var, let e const
+            Escopo:
+                Imagine jogadores de basquete fazendo ginastica,
+                ou mulheres ginastas jogando basquete.
+
+                o let somente o bloco ou dentro escopo dela pertence,
+                define sempre com let 
+
+                Outra vantagem é a parte de limpar 
+
+                Const não podem ser reatribuidos
+
+                Let e const para trabalhar com array ou Objeto
+                    const impede a reatribuição da variável, mas não a modificação do conteúdo do array/Objeto
+
+
+        Assincronismo:
+
+            Sincrono é somente em procedural e funcional
+
+            Callbacks: 
+
+
+        NodeJS:
+
+            Orientado a eventos I/O
+            
