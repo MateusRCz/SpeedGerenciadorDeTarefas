@@ -1,21 +1,11 @@
-// exports.authorizeRoles = (req, res, next) => {
+exports.authorizeRoles = (rolesPermitidos) => {
+    return (req, res, next) => {
+        const autorizacao = rolesPermitidos.find(r => r === req.usuario.role);
+        if(autorizacao){
+            return next();
+        }
 
-//     const authHeader = req.user.role
-//     const token = authHeader && authHeader.split(' ')[1];
-
-//     if(!token){
-//         return res.status(401).json({ message: "Acesso negado. Nenhum token fornecido."});
-//     };
-
-//     try {
-//         //Alterar aqui depois para o dotenv
-//         const decoded = jwt.verify(token, JWT_SECRET); 
-
-//         req.usuario = decoded;
-
-//         next();
-
-//     }catch (error){
-//         res.status(403).json({ message: "Token inválido ou expirado."});
-//     }
-// };
+        return res.status(403).json({ message: "Acesso negado: você não tem permissão para acessar essa rota." });
+    };
+    
+};
