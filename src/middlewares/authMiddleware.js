@@ -1,5 +1,10 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'seu-segredo-super-secreto'; //Alterar aqui depois para o dotenv
+require("dotenv").config();
+const JWT_SECRET = "minha_chave_super_secreta"; //Alterar aqui depois para o dotenv
+
+// if(!JWT_SECRET){
+//     throw new Error("JWT_SECRET não definido.");
+// }
 
 exports.verificaToken = (req, res, next) => {
 

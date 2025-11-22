@@ -1,13 +1,12 @@
+require("dotenv").config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = 'seu-segredo-super-secreto';
+const JWT_SECRET = "minha_chave_super_secreta";
+
 
 let usuarios = [
-
 ];
-
-
 
 
 exports.criarUsuario = (req, res) => {

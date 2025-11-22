@@ -1,13 +1,5 @@
 const tarefaModel = require('../models/tarefaModel');
 
-// let tarefas = [
-//   { id: 1, titulo: "Biologia", descricao: "", concluida: false },
-//   { id: 2, titulo: "Química", descricao: "", concluida: false },
-//   { id: 3, titulo: "Matemática", descricao: "", concluida: false },
-// ];
-
-// let nextId = 4;
-
 exports.listarTodos = async (req, res) => {
   try {
     //Chama o Model para buscar os dados
@@ -57,33 +49,23 @@ exports.criar = async (req, res) => {
 };
 
 exports.atualizar = async (req, res) => {
+  const { id } = req.params;
+  const { titulo, descricao, concluida } = req.body;
+
+  if(!titulo || !descricao || concluida === undefined){
+    return res.status(400).json({ message: 'Os campos: título, descricao e concluido são obrigatórios.' });
+  }
 
   try {
-    const { id } = req.params;
-    const { titulo, descricao, concluida } = req.body;
+    const result = await tarefaModel.update(id, titulo, descricao, concluida);
 
-    // Busca a tarefa pelo ID
-    const tarefa = await tarefaModel.findById(id);
-    if (!tarefa) {
-      return res.status(404).json({ erro: "Tarefa não encontrada." });
+    if (result.changes > 0) {
+      res.json({ id, titulo, descricao, concluida});
+    } else {
+      res.status(404).json({ message: 'Tarefa não encontrado para atualização. '});
     }
 
-    // Verifica se o usuário autenticado é o dono da tarefa
-    if (tarefa.usuarioId !== req.usuario.id) {
-      return res
-        .status(403)
-        .json({ erro: "Acesso negado. Você não pode editar esta tarefa." });
-    }
-
-    // Atualiza apenas os campos enviados
-    if (titulo !== undefined) tarefa.titulo = titulo;
-    if (descricao !== undefined) tarefa.descricao = descricao;
-    if (concluida !== undefined) tarefa.concluida = concluida;
-
-    const tarefaAtualizada = await tarefa.save();
-    res.status(200).json(tarefaAtualizada);
-  } catch (erro) {
-    console.error(erro);
+  } catch (err) {
     res.status(500).json({ erro: "Erro ao atualizar a tarefa." });
   }
 };

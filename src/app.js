@@ -1,4 +1,5 @@
 require("dotenv").config(); //Carrega as variáveis de ambiente
+console.log("Chave secreta: "+ process.env.JWT_SECRET);
 const express = require("express"); //Importação do express
 // const jwt = require('jsonwebtoken'); //Biblioteca para JWT
 // const bcrypt = require('bcryptjs'); //Biblioteca para Hash de Senhas
