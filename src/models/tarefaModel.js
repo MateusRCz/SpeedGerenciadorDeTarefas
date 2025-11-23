@@ -26,13 +26,13 @@ const tarefaModel = {
     },
 
     // Método para criar uma nova tarefa
-    create: (titulo, descricao, concluida) => {
+    create: (titulo, descricao, concluida, userId) => {
         return new Promise((resolve, reject) => {
-            db.run("INSERT INTO tarefas (titulo, descricao, concluida) VALUES (?, ?, ?)", [titulo, descricao, concluida], function (err) {
+            db.run("INSERT INTO tarefas (titulo, descricao, concluida, userId) VALUES (?, ?, ?, ?)", [titulo, descricao, concluida, userId], function (err) {
                 if (err) {
                     reject(err);
                 }
-                resolve({ id: this.lastID, titulo, descricao, concluida});
+                resolve({ id: this.lastID, titulo, descricao, concluida, userId});
             });
         });
     },

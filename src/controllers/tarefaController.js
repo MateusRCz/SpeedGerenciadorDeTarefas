@@ -28,7 +28,10 @@ exports.buscarPorId = async (req, res) => {
 };
 
 exports.criar = async (req, res) => {
-  const { titulo, descricao, concluida } = req.body;
+  const { titulo, descricao, concluida} = req.body;
+
+  console.log("Usuário autenticado:", req.usuario.id);
+  
 
     // Validações
     if (!titulo) {
@@ -40,7 +43,8 @@ exports.criar = async (req, res) => {
     }
 
     try {
-        const novaTarefa = await tarefaModel.create(titulo, descricao, concluida);
+        const userTarefa = req.usuario.id;
+        const novaTarefa = await tarefaModel.create(titulo, descricao, concluida, userTarefa);
 
         res.status(201).json({ message: "Tarefa criada com sucesso!", novaTarefa });
     } catch (err) {

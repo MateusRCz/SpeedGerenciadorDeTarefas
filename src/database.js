@@ -15,7 +15,8 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             titulo VARCHAR(100) NOT NULL,
             descricao TEXT,
-            concluida INTEGER NOT NULL DEFAULT 0
+            concluida INTEGER NOT NULL DEFAULT 0,
+            userId INTEGER NOT NULL
             )`,
       (err) => {
         if (err) {
@@ -23,8 +24,8 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
         } else {
           //Opcional : inserir alguns dados iniciais
           const INSERT =
-            "INSERT OR IGNORE INTO tarefas (id, titulo, descricao, concluida) VALUES (?,?,?,?)";
-          db.run(INSERT, [1, "Física", "estudo de física", 0]);
+            "INSERT OR IGNORE INTO tarefas (id, titulo, descricao, concluida, userId) VALUES (?,?,?,?,?)";
+          db.run(INSERT, [1, "Física", "estudo de física", 0, 1]);
         }
       }
     );
@@ -42,8 +43,7 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
         } else {
           const INSERT =
             "INSERT OR IGNORE INTO usuarios (id, nome, email, senha, role) VALUES (?,?,?,?,?)";
-          db.run(INSERT, [1, "Administrador", "teste@admin.com", "adm1234", "admin",
-          ]);
+          db.run(INSERT, [1, "Administrador", "teste@admin.com", "adm1234", "admin"]);
         }
       }
     );

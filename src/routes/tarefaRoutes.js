@@ -11,8 +11,8 @@ router.get("/", tarefaController.listarTodos); // Rota de visualizar todas as ta
 router.get("/:id", tarefaController.buscarPorId); // Rota de visualizar apenas uma tarefa específica
 
 //Rotas protegidas
-router.post("/", verificaToken, authorizeRoles(["admin"]), tarefaController.criar); //Rota de criar nova tarefa
-router.put("/:id", verificaToken, authorizeRoles(["admin"]), tarefaController.atualizar); //Rota de atualizar uma tarefa
-router.delete("/:id", verificaToken, authorizeRoles(["admin"]), tarefaController.deletar); //Rota de deletar uma tarefa
+router.post("/", verificaToken, tarefaController.criar); //Rota de criar nova tarefa
+router.put("/:id", verificaToken, tarefaController.atualizar); //Rota de atualizar uma tarefa
+router.delete("/:id", verificaToken, authorizeRoles, tarefaController.deletar); //Rota de deletar uma tarefa
 
 module.exports = router;
