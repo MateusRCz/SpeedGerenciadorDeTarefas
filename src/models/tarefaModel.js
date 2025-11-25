@@ -1,69 +1,44 @@
+const { DataTypes } = require('sequelize');
 const db = require('../database.js');
 
+// Definição do modelo Sequelize para `tarefas`
+const TarefaModelDef = db.define('Tarefa', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  titulo: { type: DataTypes.STRING, allowNull: false },
+  descricao: { type: DataTypes.TEXT, allowNull: true },
+  concluida: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+  userId: { type: DataTypes.INTEGER, allowNull: true }
+}, {
+  tableName: 'tarefas',
+  timestamps: false
+});
+
+// Mantemos a API antiga (mesmos nomes de função) mas usando Sequelize
 const tarefaModel = {
-    //Método para buscar todos as tarefas
-    findAll: () => {
-        return new Promise((resolve, reject) => {
-            db.all("SELECT * FROM tarefas", [], (err, rows) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve(rows);
-            });
-        });
-    },
+  findAll: async () => {
+    const rows = await TarefaModelDef.findAll({ raw: true });
+    return rows;
+  },
 
-    // Método para buscar uma tarefa por ID
-    findById: (id) => {
-        return new Promise((resolve, reject) => {
-            db.get("SELECT * FROM tarefas WHERE id = ?", [id], (err, rows) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve(rows);
-            });
-        });
-    },
+  findById: async (id) => {
+    const row = await TarefaModelDef.findByPk(id, { raw: true });
+    return row;
+  },
 
-    // Método para criar uma nova tarefa
-    create: (titulo, descricao, concluida, userId) => {
-        return new Promise((resolve, reject) => {
-            db.run("INSERT INTO tarefas (titulo, descricao, concluida, userId) VALUES (?, ?, ?, ?)", [titulo, descricao, concluida, userId], function (err) {
-                if (err) {
-                    reject(err);
-                }
-                resolve({ id: this.lastID, titulo, descricao, concluida, userId});
-            });
-        });
-    },
+  create: async (titulo, descricao, concluida, userId) => {
+    const novo = await TarefaModelDef.create({ titulo, descricao, concluida, userId });
+    return { id: novo.id, titulo: novo.titulo, descricao: novo.descricao, concluida: novo.concluida, userId: novo.userId };
+  },
 
-    // Método para atualizar uma tarefa
-    update: (id, titulo, descricao, concluida) => {
-        return new Promise((resolve, reject) => {
-            db.run(`UPDATE tarefas
-                        SET titulo = ?, descricao = ?, concluida = ?
-                    WHERE id = ?`,
-                    [titulo, descricao, concluida, id], function (err) {
-                if (err) {
-                    reject(err);
-                }
-                resolve({ changes: this.changes });
-            });
-        });
-    },
+  update: async (id, titulo, descricao, concluida) => {
+    const [affectedCount] = await TarefaModelDef.update({ titulo, descricao, concluida }, { where: { id } });
+    return { changes: affectedCount };
+  },
 
-    // Método para deletar um produto
-    delete: (id) => {
-        return new Promise((resolve, reject) => {
-            db.run("DELETE FROM tarefas WHERE id = ?",
-                    [id], function (err) {
-                if (err) {
-                    reject(err);
-                }
-                resolve({ changes: this.changes });
-            });
-        });
-    },
+  delete: async (id) => {
+    const deleted = await TarefaModelDef.destroy({ where: { id } });
+    return { changes: deleted };
+  }
 };
 
 module.exports = tarefaModel;

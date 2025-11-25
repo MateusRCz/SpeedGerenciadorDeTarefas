@@ -1,80 +1,39 @@
+const { DataTypes } = require('sequelize');
 const db = require('../database.js');
 
+// Define o modelo Sequelize (vai ser criado apenas quando sync for executado)
+const UsuarioModelDef = db.define('Usuario', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  nome: { type: DataTypes.STRING, allowNull: false },
+  email: { type: DataTypes.STRING, allowNull: false, unique: true },
+  senha: { type: DataTypes.STRING, allowNull: false },
+  role: { type: DataTypes.STRING, allowNull: false }
+}, {
+  tableName: 'usuarios',
+  timestamps: false
+});
+
+// Mantemos a API antiga (mesmos nomes de função) mas usando Sequelize por baixo
 const usuarioModel = {
-    //Método para buscar todos os usuários
-    findAll: () => {
-        return new Promise((resolve, reject) => {
-            db.all("SELECT * FROM usuarios", [], (err, rows) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve(rows);
-            });
-        });
-    },
+  findAll: async () => {
+    const rows = await UsuarioModelDef.findAll({ raw: true });
+    return rows;
+  },
 
-    // Método para buscar um usuário por ID
-    findById: (id) => {
-        return new Promise((resolve, reject) => {
-            db.get("SELECT * FROM usuarios WHERE id = ?", [id], (err, rows) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve(rows);
-            });
-        });
-    },
+  findById: async (id) => {
+    const row = await UsuarioModelDef.findByPk(id, { raw: true });
+    return row;
+  },
 
-    findByEmail: (email) => {
-        return new Promise((resolve, reject) => {
-            db.get("SELECT * FROM usuarios WHERE email = ?", [email], (err, rows) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve(rows);
-            });
-        });
-    },
+  findByEmail: async (email) => {
+    const row = await UsuarioModelDef.findOne({ where: { email }, raw: true });
+    return row;
+  },
 
-    // Método para criar um novo usuário
-    create: (nome, email, senha, role) => {
-        return new Promise((resolve, reject) => {
-            db.run("INSERT INTO usuarios (nome, email, senha, role) VALUES (?, ?, ?, ?)", [nome, email, senha, role], function (err) {
-                if (err) {
-                    reject(err);
-                }
-                resolve({ id: this.lastID, nome, email, senha, role});
-            });
-        });
-    },
-
-    // Método para atualizar uma tarefa
-    // update: (id, titulo, descricao, concluida) => {
-    //     return new Promise((resolve, reject) => {
-    //         db.run(`UPDATE tarefas
-    //                     SET titulo = ?, descricao = ?, concluida = ?
-    //                 WHERE id = ?`,
-    //                 [titulo, descricao, concluida, id], function (err) {
-    //             if (err) {
-    //                 reject(err);
-    //             }
-    //             resolve({ changes: this.changes });
-    //         });
-    //     });
-    // },
-
-    // // Método para deletar um produto
-    // delete: (id) => {
-    //     return new Promise((resolve, reject) => {
-    //         db.run("DELETE FROM tarefas WHERE id = ?",
-    //                 [id], function (err) {
-    //             if (err) {
-    //                 reject(err);
-    //             }
-    //             resolve({ changes: this.changes });
-    //         });
-    //     });
-    // },
+  create: async (nome, email, senha, role) => {
+    const novo = await UsuarioModelDef.create({ nome, email, senha, role });
+    return { id: novo.id, nome: novo.nome, email: novo.email, senha: novo.senha, role: novo.role };
+  }
 };
 
 module.exports = usuarioModel;
