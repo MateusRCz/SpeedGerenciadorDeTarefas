@@ -1,10 +1,4 @@
 const jwt = require('jsonwebtoken');
-require("dotenv").config();
-const JWT_SECRET = "minha_chave_super_secreta"; //Alterar aqui depois para o dotenv
-
-// if(!JWT_SECRET){
-//     throw new Error("JWT_SECRET não definido.");
-// }
 
 exports.verificaToken = (req, res, next) => {
 
@@ -17,7 +11,7 @@ exports.verificaToken = (req, res, next) => {
 
     try {
         //Alterar aqui depois para o dotenv
-        const decoded = jwt.verify(token, JWT_SECRET); 
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); 
 
         req.usuario = decoded;
 

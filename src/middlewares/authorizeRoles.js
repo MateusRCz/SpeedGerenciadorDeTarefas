@@ -1,21 +1,33 @@
-// exports.authorizeRoles = (req, res, next) => {
+const tarefaModel = require("../models/tarefaModel");
 
-//     const authHeader = req.user.role
-//     const token = authHeader && authHeader.split(' ')[1];
+exports.authorizeRoles = async (req, res, next) => {
+    try {
+        const tarefaId = req.params.id
+        const tarefa = await tarefaModel.findById(tarefaId);
 
-//     if(!token){
-//         return res.status(401).json({ message: "Acesso negado. Nenhum token fornecido."});
-//     };
+        //Verifica se a tarefa procurada existe no banco
+        if(!tarefa) {
+            return res.status(404).json({ message: "Tarefa não encontrada" });
+        }
 
-//     try {
-//         //Alterar aqui depois para o dotenv
-//         const decoded = jwt.verify(token, JWT_SECRET); 
+        //Verifica se o usuário é admin
+        if(req.usuario.role === "admin"){
+            return next();
+        }
 
-//         req.usuario = decoded;
+        //Verifica se o usuário é o dono da tarefa
+        console.log("Tarefa: " + tarefa);
+        console.log("Tarefa.userId: " + tarefa.userId);
+        console.log("Req.usuario.id: " + req.usuario.id);
+        console.log(tarefa.userId === req.usuario.id);
+        if(tarefa.userId !== req.usuario.id){
+            return res.status(400).json({ message: "Você não pode deletar essa tarefa"});
+        }
 
-//         next();
+        next()
 
-//     }catch (error){
-//         res.status(403).json({ message: "Token inválido ou expirado."});
-//     }
-// };
+    } catch (err) {
+        res.status(500).json({ message: "Erro na verificação.", erro: err.message });
+    }
+    
+};

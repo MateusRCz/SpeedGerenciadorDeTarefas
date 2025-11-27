@@ -1,30 +1,28 @@
-const sqlite3 = require('sqlite3').verbose();
-const DBSOURCE = "meu_banco.db"; //Constante para guardar o nome do banco de dados
+const { Sequelize, DataTypes } = require("sequelize");
 
-const db = new sqlite3.Database(DBSOURCE, (err) => {  //instância do sqlite3 informando o nome do banco de dados e o segundo é a função que controla, 
-    if(err) {
-        console.error(err.message);
-        throw err;
-    }else {
-        console.log('Conectado ao banco de dados SQLite.');
+const DBSOURCE = process.env.DBSOURCE || "./database.sqlite";
 
-        // Cria a tabela 'produtos' se ela não existir
-        db.run(`CREATE TABLE IF NOT EXISTS tarefas (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            titulo VARCHAR(100) NOT NULL,
-            descricao TEXT,
-            concluida INTEGER NOT NULL DEFAULT 0
-            )`, (err) => {
-                if (err) {
-                    console.error("Erro ao criar tabela 'tarefas':", err.message);
-                }else {
-                    //Opcional : inserir alguns dados iniciais
-                    const INSERT = 'INSERT OR IGNORE INTO tarefas (id, titulo, descricao, concluida) VALUES (?,?,?,?)';
-                    db.run(INSERT, [1, "Física", "estudo de física", 0]);
-                }
-            });
-
-    }
+// Cria instância do Sequelize
+const sequelize = new Sequelize({
+  dialect: "sqlite",
+  storage: DBSOURCE,
+  logging: false,
 });
 
-module.exports = db;
+// Define modelo de tarefas
+const Tarefa = sequelize.define("Tarefa", {
+  titulo: { type: DataTypes.STRING(100), allowNull: false },
+  descricao: { type: DataTypes.TEXT },
+  concluida: { type: DataTypes.BOOLEAN, defaultValue: false },
+  userId: { type: DataTypes.INTEGER, allowNull: false },
+});
+
+// Define modelo de usuários
+const Usuario = sequelize.define("Usuario", {
+  nome: { type: DataTypes.STRING(100), allowNull: false },
+  email: { type: DataTypes.STRING(255), allowNull: false, unique: true },
+  senha: { type: DataTypes.STRING(100), allowNull: false },
+  role: { type: DataTypes.STRING(20), allowNull: false },
+});
+
+module.exports = { sequelize, Tarefa, Usuario };
