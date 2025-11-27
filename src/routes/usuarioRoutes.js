@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const usuarioController = require('../controllers/usuarioController'); //Lógica de usuários
+const usuarioController = require('../controllers/usuarioController');
 
-router.post('/criar', usuarioController.criarUsuario); //Rota para criar novo usuário
-
-router.post('/login', usuarioController.login); //Rota para logar um usuário existente
+router.get('/', usuarioController.getAllUsuarios);
+router.post('/criar', usuarioController.criarUsuario);
+router.post('/login', usuarioController.login);
 
 module.exports = router;

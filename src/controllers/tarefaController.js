@@ -1,90 +1,85 @@
-const tarefaModel = require('../models/tarefaModel');
+const Tarefa = require('../models/tarefaModel');
 
-exports.listarTodos = async (req, res) => {
+exports.getAllTarefas = async (req, res) => {
   try {
-    //Chama o Model para buscar os dados
-    const tarefas = await tarefaModel.findAll();
+    const tarefas = await Tarefa.findAll();
     res.status(200).json(tarefas);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erro ao obter a(s) tarefa(s)" });
+    res.status(500).json({ error: "Erro ao obter tarefas" });
   }
 };
 
-exports.buscarPorId = async (req, res) => {
+exports.getTarefaById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const tarefa = await tarefaModel.findById(id);
+    const tarefa = await Tarefa.findByPk(req.params.id);
 
     if (!tarefa) {
-      return res.status(404).json({ erro: "Tarefa não encontrada." });
+      return res.status(404).json({ message: "Tarefa não encontrada" });
     }
 
     res.status(200).json(tarefa);
-  } catch (erro) {
-    console.error(erro);
-    res.status(500).json({ erro: "Erro ao buscar a tarefa." });
+  } catch (error) {
+    res.status(500).json({ error: "Erro ao buscar tarefa" });
   }
 };
 
-exports.criar = async (req, res) => {
-  const { titulo, descricao, concluida} = req.body;
-
-  console.log("Usuário autenticado:", req.usuario.id);
-  
-
-    // Validações
-    if (!titulo) {
-        return res.status(400).json({ message: 'Título é obrigatório.' });
-    }
-
-    if (titulo.trim().length < 3) {
-        return res.status(400).json({ message: 'Título deve ter no mínimo 3 caracteres.' });
-    }
-
-    try {
-        const userTarefa = req.usuario.id;
-        const novaTarefa = await tarefaModel.create(titulo, descricao, concluida, userTarefa);
-
-        res.status(201).json({ message: "Tarefa criada com sucesso!", novaTarefa });
-    } catch (err) {
-        res.status(500).json({ message: "Erro ao criar tarefa.", erro: err.message });
-    }
-};
-
-exports.atualizar = async (req, res) => {
-  const { id } = req.params;
-  const { titulo, descricao, concluida } = req.body;
-
-  if(!titulo || !descricao || concluida === undefined){
-    return res.status(400).json({ message: 'Os campos: título, descricao e concluido são obrigatórios.' });
-  }
-
+exports.createTarefa = async (req, res) => {
   try {
-    const result = await tarefaModel.update(id, titulo, descricao, concluida);
+    const { titulo, descricao, concluida } = req.body;
 
-    if (result.changes > 0) {
-      res.json({ id, titulo, descricao, concluida});
-    } else {
-      res.status(404).json({ message: 'Tarefa não encontrado para atualização. '});
+    if (!titulo || titulo.trim().length < 3) {
+      return res.status(400).json({ message: "Título inválido" });
     }
 
-  } catch (err) {
-    res.status(500).json({ erro: "Erro ao atualizar a tarefa." });
+    const nova = await Tarefa.create({
+      titulo,
+      descricao,
+      concluida: concluida ?? false,
+      usuarioId: req.usuario.id
+    });
+
+    res.status(201).json(nova);
+  } catch (error) {
+    res.status(500).json({ error: "Erro ao criar tarefa" });
   }
 };
 
-exports.deletar = async(req, res) => {
-  const id = parseInt(req.params.id);
-
+exports.updateTarefa = async (req, res) => {
   try {
-    const result = await tarefaModel.delete(id);
-    if(result.changes > 0){
-      res.status(204).send(); // Sucesso, sem conteúdo
-    } else {
-      res.status(404).json({ message: 'Tarefa não encontrado para exclusão.' });
+    const tarefa = await Tarefa.findByPk(req.params.id);
+
+    if (!tarefa) {
+      return res.status(404).json({ message: "Tarefa não encontrada" });
     }
-  } catch (err) {
-    res.status(500).json({ message: "Erro no servidor ao deletar tarefa." })
+
+    if (tarefa.usuarioId !== req.usuario.id && req.usuario.role !== "admin") {
+      return res.status(403).json({ message: "Sem permissão" });
+    }
+
+    await tarefa.update(req.body);
+
+    res.status(200).json(tarefa);
+  } catch (error) {
+    res.status(500).json({ error: "Erro ao atualizar tarefa" });
+  }
+};
+
+exports.deleteTarefa = async (req, res) => {
+  try {
+    const tarefa = await Tarefa.findByPk(req.params.id);
+
+    if (!tarefa) {
+      return res.status(404).json({ message: "Tarefa não encontrada" });
+    }
+
+    if (tarefa.usuarioId !== req.usuario.id && req.usuario.role !== "admin") {
+      return res.status(403).json({ message: "Sem permissão" });
+    }
+
+    await tarefa.destroy();
+
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: "Erro ao deletar tarefa" });
   }
 };
