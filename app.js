@@ -1,10 +1,6 @@
-require('dotenv').config() //Carrega as variáveis de ambiente
+require('dotenv').config(); //Carrega as variáveis de ambiente
 const express = require("express"); //Importação do express
 const app = express(); //Instância
-const PORT = 3000;
-
-console.log(process.env.JWT_SECRET);
-console.log(process.env.DBSOURCE);
 
 app.use(express.json());
 const db = require('./src/database');
@@ -27,17 +23,9 @@ app.get("/sobre", (req, res) => {
   res.send('Esta é a página "Sobre" da nossa aplicação.');
 });
 
-async function startServer() {
-  try {
-    await db.sync(); // sincroniza modelos com o banco (cria/atualiza tabelas se necessário)
-    console.log('Modelos sincronizados com o banco de dados.');
-    app.listen(PORT, () => {
-      console.log(`Servidor rodando em http://localhost:${PORT}`);
-      console.log("Para parar o servidor, pressione Ctrl+C no terminal.");
-    });
-  } catch (err) {
-    console.error('Erro ao sincronizar o banco de dados:', err);
-  }
-}
+// Rota para o TDD
+app.get('/api/health-check', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
 
-startServer();
+module.exports = app;
