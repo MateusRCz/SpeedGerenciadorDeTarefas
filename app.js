@@ -7,7 +7,7 @@ console.log(process.env.JWT_SECRET);
 console.log(process.env.DBSOURCE);
 
 app.use(express.json());
-const db = require('./src/database');
+const db = require('./src/database'); //Sequelize
 // Requer os modelos para que o Sequelize os registre antes da sincronização
 require('./src/models/usuarioModel');
 require('./src/models/tarefaModel');
@@ -31,13 +31,15 @@ async function startServer() {
   try {
     await db.sync(); // sincroniza modelos com o banco (cria/atualiza tabelas se necessário)
     console.log('Modelos sincronizados com o banco de dados.');
-    app.listen(PORT, () => {
-      console.log(`Servidor rodando em http://localhost:${PORT}`);
-      console.log("Para parar o servidor, pressione Ctrl+C no terminal.");
-    });
   } catch (err) {
     console.error('Erro ao sincronizar o banco de dados:', err);
   }
 }
 
+app.get('/api/health-check', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 startServer();
+
+module.exports = app;
