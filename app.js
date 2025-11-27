@@ -1,18 +1,15 @@
-require('dotenv').config() //Carrega as variáveis de ambiente
-const express = require("express"); //Importação do express
-const app = express(); //Instância
-const PORT = 3000;
-
-console.log(process.env.JWT_SECRET);
-console.log(process.env.DBSOURCE);
+require('dotenv').config();
+const express = require("express");
+const { sequelize } = require('./src/database'); // importa a instância correta
+const app = express();
 
 app.use(express.json());
 
-const tarefaRoutes = require("./src/routes/tarefaRoutes"); //importação Rota de tarefas
-const usuarioRoutes = require('./src/routes/usuarioRoutes'); //importação Rota de usuários
+const tarefaRoutes = require("./src/routes/tarefaRoutes");
+const usuarioRoutes = require("./src/routes/usuarioRoutes");
 
-app.use("/api/tarefas", tarefaRoutes);  //Rota de tarefas
-app.use("/api/usuarios", usuarioRoutes); //Rota de usuários
+app.use("/api/tarefas", tarefaRoutes);
+app.use("/api/usuarios", usuarioRoutes);
 
 //Rota de teste
 app.get("/", (req, res) => {
@@ -23,8 +20,9 @@ app.get("/sobre", (req, res) => {
   res.send('Esta é a página "Sobre" da nossa aplicação.');
 });
 
-// Inicia o servidor
-app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
-  console.log("Para parar o servidor, pressione Ctrl+C no terminal.");
+// Health check
+app.get('/api/health-check', (req, res) => {
+  res.status(200).json({ status: 'ok' });
 });
+
+module.exports = app;
