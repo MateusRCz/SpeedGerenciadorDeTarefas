@@ -51,7 +51,7 @@ describe('TarefaController — Testes Unitários', () => {
         expect(Tarefa.create).toHaveBeenCalledWith({
     ...dados,
     concluida: false,
-    usuarioId: req.usuario.id
+    userId: req.usuario.id
 });
 
         expect(res.status).toHaveBeenCalledWith(201);

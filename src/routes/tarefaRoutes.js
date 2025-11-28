@@ -8,7 +8,7 @@ router.get('/', tarefaController.getAllTarefas);
 router.get('/:id', tarefaController.getTarefaById);
 
 // POST e PUT exige token
-router.post('/criar', verificaToken, tarefaController.createTarefa);
+router.post('/', verificaToken, tarefaController.createTarefa);
 router.put('/:id', verificaToken, tarefaController.updateTarefa);
 
 // DELETE exige token
