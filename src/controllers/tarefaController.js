@@ -11,7 +11,7 @@ exports.getAllTarefas = async (req, res) => {
 
 exports.getTarefaById = async (req, res) => {
   try {
-    const tarefa = await Tarefa.findByPk(req.params.id);
+    const tarefa = await Tarefa.findById(req.params.id);
 
     if (!tarefa) {
       return res.status(404).json({ message: "Tarefa não encontrada" });
@@ -35,7 +35,7 @@ exports.createTarefa = async (req, res) => {
       titulo,
       descricao,
       concluida: concluida ?? false,
-      usuarioId: req.usuario.id
+      userId: req.usuario.id
     });
 
     res.status(201).json(nova);
@@ -46,40 +46,49 @@ exports.createTarefa = async (req, res) => {
 
 exports.updateTarefa = async (req, res) => {
   try {
-    const tarefa = await Tarefa.findByPk(req.params.id);
+    const tarefa = await Tarefa.findById(req.params.id);
 
     if (!tarefa) {
       return res.status(404).json({ message: "Tarefa não encontrada" });
     }
 
-    if (tarefa.usuarioId !== req.usuario.id && req.usuario.role !== "admin") {
+    if (tarefa.userId !== req.usuario.id && req.usuario.role !== "admin") {
       return res.status(403).json({ message: "Sem permissão" });
     }
 
-    await tarefa.update(req.body);
+    await Tarefa.update(
+      req.params.id,
+      req.body.titulo ?? tarefa.titulo,
+      req.body.descricao ?? tarefa.descricao,
+      req.body.concluida ?? tarefa.concluida
+    );
 
-    res.status(200).json(tarefa);
+    res.status(200).json({ message: "Tarefa atualizada com sucesso" });
+    
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Erro ao atualizar tarefa" });
   }
 };
 
 exports.deleteTarefa = async (req, res) => {
   try {
-    const tarefa = await Tarefa.findByPk(req.params.id);
+    const tarefa = await Tarefa.findById(req.params.id);
 
     if (!tarefa) {
       return res.status(404).json({ message: "Tarefa não encontrada" });
     }
 
-    if (tarefa.usuarioId !== req.usuario.id && req.usuario.role !== "admin") {
+    if (tarefa.userId !== req.usuario.id && req.usuario.role !== "admin") {
       return res.status(403).json({ message: "Sem permissão" });
     }
 
-    await tarefa.destroy();
+    await Tarefa.delete(req.params.id);
 
-    res.status(204).send();
+    return res.status(200).json({ message: "Tarefa deletada com sucesso" });
+
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Erro ao deletar tarefa" });
   }
 };

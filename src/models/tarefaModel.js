@@ -25,10 +25,11 @@ const tarefaModel = {
     return row;
   },
 
-  create: async (titulo, descricao, concluida, userId) => {
-    const novo = await TarefaModelDef.create({ titulo, descricao, concluida, userId });
-    return { id: novo.id, titulo: novo.titulo, descricao: novo.descricao, concluida: novo.concluida, userId: novo.userId };
+  create: async (data) => {
+    const novo = await TarefaModelDef.create(data);
+    return novo.get({ plain: true });
   },
+
 
   update: async (id, titulo, descricao, concluida) => {
     const [affectedCount] = await TarefaModelDef.update({ titulo, descricao, concluida }, { where: { id } });

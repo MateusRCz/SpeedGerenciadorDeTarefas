@@ -4,7 +4,7 @@
   "description": "primeira api com node",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node server.js",
     "dev": "nodemon app.js",
     "test": "jest --runInBand"
   },

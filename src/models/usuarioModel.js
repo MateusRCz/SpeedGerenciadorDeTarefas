@@ -16,24 +16,24 @@ const UsuarioModelDef = db.define('Usuario', {
 // Mantemos a API antiga (mesmos nomes de função) mas usando Sequelize por baixo
 const usuarioModel = {
   findAll: async () => {
-    const rows = await UsuarioModelDef.findAll({ raw: true });
-    return rows;
+    return await UsuarioModelDef.findAll({ raw: true });
   },
 
   findById: async (id) => {
-    const row = await UsuarioModelDef.findByPk(id, { raw: true });
-    return row;
+    return await UsuarioModelDef.findByPk(id, { raw: true });
   },
 
-  findByEmail: async (email) => {
-    const row = await UsuarioModelDef.findOne({ where: { email }, raw: true });
-    return row;
-  },
+  findOne: async (filtro) => UsuarioModelDef.findOne(filtro),
 
-  create: async (nome, email, senha, role) => {
-    const novo = await UsuarioModelDef.create({ nome, email, senha, role });
-    return { id: novo.id, nome: novo.nome, email: novo.email, senha: novo.senha, role: novo.role };
-  }
+  //findByEmail: async (email) => {
+   // return await UsuarioModelDef.findOne({ where: { email }, raw: true });
+  //},
+
+  create: async (usuarioData) => {
+  const novo = await UsuarioModelDef.create(usuarioData);
+  return novo.get({ plain: true });
+}
+
 };
 
 module.exports = usuarioModel;
